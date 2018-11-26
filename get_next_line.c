@@ -16,27 +16,27 @@
 int		get_next_line(const int fd, char **line)
 {
 	char buf[BUFF_SIZE];
-	int		size;
 	int i;
-
+	
 	i = 0;
-	size = BUFF_SIZE;
 	line = NULL;
 	if (fd == -1)
 		return (1);
-	while (i < size)
+	while (read(fd, buf+i, 1))
 	{
+			printf("line[0][%d] = %c\n", i, line[0][i]);
 		if (buf[i] != '\n')
 		{
-			size = read(fd, buf+i, 1);
+			line[0][i] = buf[i];
 			printf("buf[%d] = %c\n", i, buf[i]);
+			printf("line[0][%d] = %c\n", i, line[0][i]);
 			i++;
 		}
 		else
 			return (123);
 	}
-	buf[size] = 0;
-	write(1, buf, size);
+	buf[i] = 0;
+	//write(1, buf, size);
 	return (0);
 }
 
