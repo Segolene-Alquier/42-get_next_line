@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:44:20 by salquier          #+#    #+#             */
-/*   Updated: 2018/11/26 11:57:13 by salquier         ###   ########.fr       */
+/*   Updated: 2018/11/26 17:01:15 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define GET_NEXT_LINE_H
 # define BUFF_SIZE 300
 # include <unistd.h>
+# include <stdlib.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
