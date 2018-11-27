@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/11/26 19:03:48 by salquier         ###   ########.fr       */
+/*   Updated: 2018/11/27 12:11:26 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -79,6 +79,17 @@
 	line[newline] = 0;
 	return (0);
 }*/
+
+char	*ft_realloc(char *old, int size)
+{
+	char *new;
+
+	if (!old || !(new = (char *)malloc(sizeof(char) * size)))
+		return (NULL);
+	ft_strncpy(new, old, size);
+	return (new);
+}
+
 int		get_next_line(const int fd, char **line)
 {
 	static char buf[BUFF_SIZE + 1];
@@ -87,28 +98,27 @@ int		get_next_line(const int fd, char **line)
 	//int letter;
 	char *tmp;
 	size_t size;
-
+	size_t len;
 	i = 0;
 	line = NULL;
+	len = 0;
 	//newline = 0;
 	if (fd == -1)
 		return (1);
-	// GET NB OF BYTES IN FILE VIA READ //
-	tmp = ft_strnew(size = read(fd, buf+i, BUFF_SIZE));
+	tmp = ft_strdup("\0");
+	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
+	{
+		len += size;
+		printf("size = %lu\n", size);
+		printf("len = %lu\n", len);
+		printf("BUFF_SIZE = %d\n", BUFF_SIZE);
+		if (!(tmp = ft_realloc(tmp, len + 1)))
+			return (0);
+		ft_strncat(tmp, buf, size);
+	}
+		printf("tmp = %s\n", tmp);
 	// ALLOCATE SUFFICIENT MEMORY //
 	//tmp = ft_strnew(size);
-	// COPY TEXT IN BUFFER //
-	printf("size = %lu\n", size);
-	printf("tmp[74] = %c\n", tmp[77]);
-	i = 0;
-	while (read(fd, buf+i, BUFF_SIZE))
-	{
-		tmp[i] = buf[i];
-		printf("buf[%d] = %c\n", i, buf[i]);
-		printf("tmp[%d] = %c\n", i, tmp[i]);
-
-		i++;
-	}
 		/*letter = 0;
 		line = (char **)malloc(sizeof(char *) * (newline + 1));
 		while (buf[i] != '\n')
