@@ -1,0 +1,21 @@
+je dois lire tout le fichier jusqu a BUFFER_SIZE bytes
+en // j'enregistre le fichier dans line jusqu'a ce que je tombe sur un \n
+en // j'arrete de remplir line
+en // je remplis un buffer tmp avec le reste de mon fichier
+je retourne 1 si le fichier n'est pas fini
+- tmp != EOF
+je retourne 0 si le fichier est fini
+- tmp == EOF
+
+je peux rappeler la fonction si retour != 0
+je redemarre dans mon fichier apres le \n
+- dans le buffer ?
+je remplis line jusau'au prochain \n
+je remplis un buffer avec le reste de mon fichier
+je retourne 1 si le fichier n'est pas fini
+je retourne 0 si le fichier est fini
+...
+
+entre 2 boucles, ce qui n'est pas initialise :
+- tmp conserve son contenu
+- 

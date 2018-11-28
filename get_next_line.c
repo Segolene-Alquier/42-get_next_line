@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/11/27 12:11:26 by salquier         ###   ########.fr       */
+/*   Updated: 2018/11/28 19:32:46 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -45,40 +45,6 @@
 	//write(1, buf, size);
 	return (0);
 }*/
-/*int		get_next_line(const int fd, char **line)
-{
-	static char buf[BUFF_SIZE + 1];
-	static int i;
-	int newline;
-	int letter;
-	char *tmp;
-
-	i = 0;
-	//line = NULL;
-	newline = 0;
-	if (fd == -1)
-		return (1);
-	while (read(fd, buf+i, BUFF_SIZE))
-	{
-		printf("buf[%d] = %c\n", i, buf[i]);
-		letter = 0;
-		line = (char **)malloc(sizeof(char *) * (newline + 1));
-		while (buf[i] != '\n')
-		{
-			line[newline] = (char *)malloc(sizeof(char) * (letter + 1));
-			line[newline][letter] = buf[i];
-			printf("buf[%d] = %c\n", i, buf[i]);
-			printf("newline[%d][%d] = %c\n", newline, letter, line[newline][letter]);
-			i++;
-			letter++;
-		}
-		i++;
-		printf("i = %d\n", i);
-		newline++;
-	}
-	line[newline] = 0;
-	return (0);
-}*/
 
 char	*ft_realloc(char *old, int size)
 {
@@ -86,56 +52,118 @@ char	*ft_realloc(char *old, int size)
 
 	if (!old || !(new = (char *)malloc(sizeof(char) * size)))
 		return (NULL);
-	ft_strncpy(new, old, size);
+	printf("strncpy = %s\n", ft_strncpy(new, old, size));
 	return (new);
 }
-
-int		get_next_line(const int fd, char **line)
+/*char	*cpy_file(int fd)
 {
-	static char buf[BUFF_SIZE + 1];
-	static int i;
-	//int newline;
-	//int letter;
+	char buf[BUFF_SIZE + 1];
 	char *tmp;
 	size_t size;
 	size_t len;
-	i = 0;
-	line = NULL;
 	len = 0;
-	//newline = 0;
-	if (fd == -1)
-		return (1);
 	tmp = ft_strdup("\0");
 	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		len += size;
-		printf("size = %lu\n", size);
-		printf("len = %lu\n", len);
-		printf("BUFF_SIZE = %d\n", BUFF_SIZE);
 		if (!(tmp = ft_realloc(tmp, len + 1)))
-			return (0);
+			return (NULL);
 		ft_strncat(tmp, buf, size);
 	}
-		printf("tmp = %s\n", tmp);
-	// ALLOCATE SUFFICIENT MEMORY //
-	//tmp = ft_strnew(size);
-		/*letter = 0;
-		line = (char **)malloc(sizeof(char *) * (newline + 1));
-		while (buf[i] != '\n')
+	return (tmp);
+}*/
+int		get_next_line(const int fd, char **line)
+{
+	static char *tmp;
+	char buf[BUFF_SIZE + 1];
+	int letter;
+	int i;
+	size_t	len;
+	size_t	size;
+	int j;
+	
+	j = 0;
+	i = 0;
+	len = 0;
+	letter = 0;
+	if (fd == -1 || !line)
+		return (-1);
+	line[0] = ft_strdup("\0");
+	if (!tmp)
+	{
+		printf("%s\n", "----- TMP non existant / 1ere LIGNE -----");
+		while ((size = read(fd, buf, BUFF_SIZE) > 0))
 		{
-			line[newline] = (char *)malloc(sizeof(char) * (letter + 1));
-			line[newline][letter] = buf[i];
-			printf("buf[%d] = %c\n", i, buf[i]);
-			printf("newline[%d][%d] = %c\n", newline, letter, line[newline][letter]);
+			while (buf[i] != '\n' && buf[i] != '\0')
+			{
+				len += size;
+				if (!(line[0] = ft_realloc(buf, len + 1)))
+					return (-1);
+				ft_strncat(line[0], buf, size);
+				//printf("1 line[%d][%d] = %c\n", 0, letter, line[0][letter]);
+				i++;
+				letter++;
+			}
+			line[0][letter] = '\0';
 			i++;
-			letter++;
+			//tmp = ft_strdup("\0");
+			//len = 0;
+			//printf("buf[%d] = %c\n", i, buf[i]);
+			tmp = ft_strsub(buf, i, ft_strlen(buf) - i);
+			/*while (buf[i])
+			{
+				printf("size = %lu, len = %lu\n", size, len);
+				printf("buf[%d] = %c\n", i, buf[i]);
+				len+= size;
+				if (!(tmp = ft_realloc(buf, len + 1)))
+					return (-1);
+				printf("strncat = %s\n", ft_strncat(tmp, buf, size));
+				//tmp = (char *)malloc(sizeof(char) * (j + 1));
+				//tmp[j] = buf[i];
+				//printf("tmp[%d] = %c\n", j, tmp[j]);
+				j++;
+				i++;
+			}*/
+			printf("tmp : %s\n", tmp);
+			printf("line[0] : %s\n", line[0]);
 		}
-		i++;
-		printf("i = %d\n", i);
-		newline++;
 	}
-	line[newline] = 0;*/
-	return (0);
+	else
+	{
+		printf("%s\n", "----- TMP existant / PAS 1ere LIGNE -----");
+		printf("tmp[%d] = %c\n", j, tmp[j]);
+		while (tmp[i])
+		{
+			while (tmp[i] != '\n')
+			{
+				len++;
+				if (!(line[0] = ft_realloc(tmp, len + 1)))
+					return (-1);
+				ft_strncat(line[0], tmp, len);
+				printf("2 line[%d][%d] = %c\n", 0, letter, line[0][letter]);
+				i++;
+				letter++;
+			}
+			line[0][letter] = '\0';
+			i++;
+			while (tmp[i])
+			{
+			tmp = (char *)malloc(sizeof(char) * (j + 1));
+			tmp[j] = tmp[i];
+			//printf("tmp[%d] = %c\n", j, tmp[j]);
+			j++;
+			i++;
+			}
+			printf("tmp : %s\n", tmp);
+			printf("line[0] : %s\n", line[0]);
+		}
+	}
+	if (!tmp)
+	{
+		printf("%s\n", "----- DERNIERE LIGNE -----");
+		return (0);
+	}
+	return (1);
 }
 
 
@@ -143,9 +171,17 @@ int		main(void)
 {
 	int fd;
 	char **line;
-	line = NULL;
+	//int i = 0;
+	line = (char **)malloc(sizeof(char *) * 1000);
+	//line = NULL;
 	fd = open("test", O_RDONLY);
-	printf("%d\n", get_next_line(fd, line));
+	printf("appel 1 : %d\n", get_next_line(fd, line));
+	//printf("line[0] : %s\n", line[0]);
+	printf("appel 2 : %d\n", get_next_line(fd, line));
+	//printf("line[1] : %s\n", line[0]);
+	printf("appel 3 : %d\n", get_next_line(fd, line));
+	//printf("line[2] : %s\n", line[0]);
+
 	close(fd);
 	return (0);
 }
