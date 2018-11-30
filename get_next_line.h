@@ -6,13 +6,13 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:44:20 by salquier          #+#    #+#             */
-/*   Updated: 2018/11/27 13:10:59 by salquier         ###   ########.fr       */
+/*   Updated: 2018/11/30 16:30:07 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 10000
+# define BUFF_SIZE 1
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/types.h>
