@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/01 14:26:18 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/01 17:58:52 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -25,14 +25,14 @@ char	*ft_realloc(char *old, int size)
 
 int		get_next_line(const int fd, char **line)
 {
-	static char *tmp;
+	static char *tmp = NULL;
 	char buf[BUFF_SIZE + 1];
 	int letter;
 	int i;
 	size_t	len;
 	size_t	size;
 	int j;
-	char *bufcpy;
+	//char *bufcpy;
 
 	j = 0;
 	i = 0;
@@ -43,34 +43,31 @@ int		get_next_line(const int fd, char **line)
 	line[0] = ft_strdup("\0");
 	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		if (tmp)
+		printf("size = %lu\n", size);
+		buf[size] = '\0';
+		while (buf[i] && !tmp)
 		{
-			while (tmp[i])
-			{
-				while (tmp[i] != '\n' && tmp[i])
-				{
-					j'enregistre dans line
-					i++;
-				}
-				if (tmp[i] == '\n')
-				{
-					j'enregistre dans tmp le reste
-					return (1)
-				}
-			}
-		}
-		while (buf[i] != '\n' && buf[i])
-		{
-			if (!tmp)
-				j'enregistre dans line ce que je trouve
-			els
-				j'enregistre dans bufcpy ce aue je lis
+			printf("%s\n", "---- TMP NON-EXISTANT ----");
+			if (buf[i] == '\n')
+				break ;
+			printf("buf[%d] :%c\n", i, buf[i]);
+			//j'enregistre dans line
 			i++;
 		}
-		if (!tmp)
-			j'enregistre dans tmp ce qu'il y a apres le \n
-		else
-			je concatene bufcpy avec tmp;
+		printf("nbuf[%d] :%c\n", i, buf[i]);
+		while (tmp[i])
+		{
+			printf("%s\n", "---- TMP EXISTANT ----");
+			if(!ft_strchr(tmp, '\n'))
+				break ;
+			// j'enregistre dans line
+			i++;
+		}
+		if (buf[i] == '\n' && (i + 1) < (int)size)
+		{
+			printf("%s\n", "---- TMP A REMPLIR ----");
+			//j'enregistre dans tmp le reste
+		}
 	}
 	return (1);
 }
