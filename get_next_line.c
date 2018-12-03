@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/11/30 16:06:15 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/03 11:44:21 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -19,7 +19,7 @@ char	*ft_realloc(char *old, int size)
 
 	if (!old || !(new = (char *)malloc(sizeof(char) * size)))
 		return (NULL);
-	ft_strncpy(new, old, size);
+	printf("strncpy : %s\n", ft_strncpy(new, old, size));
 	return (new);
 }
 /*char	*cpy_file(int fd)
@@ -73,7 +73,7 @@ int		get_next_line(const int fd, char **line)
 				len += size;
 				if (!(line[0] = ft_realloc(buf, len + 1)))
 					return (-1);
-				ft_strncat(line[0], buf, size);
+				printf("strncat : %s\n", ft_strncat(line[0], buf, size));
 				//printf("1 line[%d][%d] = %c\n", 0, letter, line[0][letter]);
 				i++;
 				letter++;
