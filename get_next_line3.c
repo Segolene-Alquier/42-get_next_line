@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/04 15:26:50 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/04 18:48:50 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -29,7 +29,6 @@ char	*read_file(const int fd)
 	size_t	len;
 	size_t	size;
 	char	*bufcpy;
-	//char	*buffer;
 
 	len = 0;
 	bufcpy = ft_strnew(BUFF_SIZE);
@@ -40,11 +39,8 @@ char	*read_file(const int fd)
 		printf("%s\n", "---- READING ----");
 		//printf("buf : %s\n", buf);
 		bufcpy = ft_strjoin(bufcpy, buf);
-		//if (!(bufcpy = ft_realloc(buf, len)))
-	//		return (NULL);
-		//printf("bufcpy : %s\n", bufcpy);
-		//printf("strncat : %s\n", ft_strncat(bufcpy, buf, len + 1));
-		//printf("size : %lu, len : %lu\n", size, len);
+		//printf("bufcpy de read : %s\n", bufcpy);
+		printf("size : %lu, len : %lu\n", size, len);
 		if (ft_strchr(buf, '\n'))
 			break ;
 	}
@@ -72,11 +68,13 @@ int		get_next_line(const int fd, char **line)
 		while (tmp[i] && tmp[i] != '\n')
 			i++;
 		//printf("tmp[%d] : %c\n", i, tmp[i]);
-		//printf("bufcpy tmp : %s\n", bufcpy);
-		//printf("tmp : %s\n", tmp);
+		printf("tmp 2: %s\n", tmp);
 		if (!(line[0] = ft_strsub(tmp, 0, i)) || !(tmp = ft_strsub(tmp, i + 1, ft_strlen(bufcpy))))
 			return (-1);
-		//printf("tmp : %s\n", tmp);
+		printf("tmp : %s\n", tmp);
+		printf("strlen tmp : %lu\n", ft_strlen(tmp));
+		if (!ft_strlen(tmp))
+			return (0);
 		if (line[0])
 			return (1);
 	}
@@ -84,15 +82,15 @@ int		get_next_line(const int fd, char **line)
 	{
 		bufcpy = read_file(fd);
 		//printf("bufcpy : %s\n", bufcpy);
-		while (bufcpy && bufcpy[i] != '\n')
+		while (bufcpy[i] != '\n' && bufcpy[i])
 			i++;
 		//printf("bufcpy[%d] : %c\n", i + 1, bufcpy[i + 1]);
 		if (!(line[0] = ft_strsub(bufcpy, 0, i)) || !(tmp = ft_strsub(bufcpy, i + 1, ft_strlen(bufcpy))))
 			return (-1);
-		//if (line[0])
-		//	return (1);
+		printf("tmp 1: %s\n", tmp);
+		if (!ft_strlen(tmp))
+			return (0);
 	}
-
 	//printf("line[0] : %s\n", line[0]);
 	//printf("tmp : %s\n", tmp);
 
@@ -115,8 +113,8 @@ int		main(int argc, char **argv)
 	printf("line[0] : %s\n", line[0]);
 	printf("appel 3 : %d\n", get_next_line(fd, line));
 	printf("line[0] : %s\n", line[0]);
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("line[2] : %s\n", line[0]);
+	printf("appel 4 : %d\n", get_next_line(fd, line));
+	printf("line[2] : %s\n", line[0]);
 	//printf("appel 4 : %d\n", get_next_line(fd, line));
 	/*printf("appel 4 : %d\n", get_next_line(fd, line));
 	printf("appel 4 : %d\n", get_next_line(fd, line));
