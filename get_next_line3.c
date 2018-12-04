@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/04 12:33:58 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/04 15:26:50 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -19,7 +19,7 @@ char	*ft_realloc(char *old, int size)
 
 	if (!old || !(new = (char *)malloc(sizeof(char) * size)))
 		return (NULL);
-	ft_strncpy(new, old, size);
+	printf("strncpy : %s\n", ft_strncpy(new, old, size));
 	return (new);
 }
 
@@ -29,6 +29,7 @@ char	*read_file(const int fd)
 	size_t	len;
 	size_t	size;
 	char	*bufcpy;
+	//char	*buffer;
 
 	len = 0;
 	bufcpy = ft_strnew(BUFF_SIZE);
@@ -37,9 +38,12 @@ char	*read_file(const int fd)
 		len += size;
 		buf[size] = '\0';
 		printf("%s\n", "---- READING ----");
-		if (!(bufcpy = ft_realloc(bufcpy, len)))
-			return (NULL);
-		ft_strncat(bufcpy, buf, len + 1);
+		//printf("buf : %s\n", buf);
+		bufcpy = ft_strjoin(bufcpy, buf);
+		//if (!(bufcpy = ft_realloc(buf, len)))
+	//		return (NULL);
+		//printf("bufcpy : %s\n", bufcpy);
+		//printf("strncat : %s\n", ft_strncat(bufcpy, buf, len + 1));
 		//printf("size : %lu, len : %lu\n", size, len);
 		if (ft_strchr(buf, '\n'))
 			break ;
@@ -90,7 +94,7 @@ int		get_next_line(const int fd, char **line)
 	}
 
 	//printf("line[0] : %s\n", line[0]);
-	printf("tmp : %s\n", tmp);
+	//printf("tmp : %s\n", tmp);
 
 	return (1);
 }
