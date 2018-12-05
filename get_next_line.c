@@ -6,121 +6,74 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/03 11:44:21 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/05 17:35:48 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
 #include "get_next_line.h"
 #include <stdio.h>
 
-char	*ft_realloc(char *old, int size)
+char	*read_file(const int fd)
 {
-	char *new;
+	char	buf[BUFF_SIZE + 1];
+	int		size;
+	char	*bufcpy;
 
-	if (!old || !(new = (char *)malloc(sizeof(char) * size)))
-		return (NULL);
-	printf("strncpy : %s\n", ft_strncpy(new, old, size));
-	return (new);
-}
-/*char	*cpy_file(int fd)
-{
-	char buf[BUFF_SIZE + 1];
-	char *tmp;
-	size_t size;
-	size_t len;
-	len = 0;
-	tmp = ft_strdup("\0");
+	bufcpy = ft_strnew(BUFF_SIZE);
 	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
 	{
-		len += size;
-		if (!(tmp = ft_realloc(tmp, len + 1)))
-			return (NULL);
-		ft_strncat(tmp, buf, size);
+		buf[size] = '\0';
+		//printf("%s\n", "---- READING ----");
+		bufcpy = ft_strjoin(bufcpy, buf);
+		//printf("size : %lu\n", size);
+		if (ft_strchr(buf, '\n'))
+			break ;
 	}
-	return (tmp);
-}*/
+	return (bufcpy);
+}
+
 int		get_next_line(const int fd, char **line)
 {
-	static char *tmp;
-	char buf[BUFF_SIZE + 1];
-	int letter;
-	int i;
-	size_t	len;
-	size_t	size;
-	int j;
-	char *bufcpy;
-	static int last = 0;
+	char		*buffer;
+	char		*bufcpy;
+	static char	*tmp = NULL;
+	int			i;
 
-	if (last == 1)
-		return (0);
-	if (last == 1)
-		return (0);
-	j = 0;
 	i = 0;
-	len = 0;
-	letter = 0;
-	if (fd == -1 || !line)
-		return (-1);
 	line[0] = ft_strdup("\0");
-	ft_putnbr(last);
-	if (!tmp)
+	bufcpy = ft_strdup("\0");
+	buffer = NULL;
+	//return (0);
+	if (fd < 0 || !line || BUFF_SIZE < 1 || read(fd, buffer, 0) < 0)
+		return (-1);
+	if (!tmp || (tmp && !ft_strchr(tmp, '\n')))
 	{
-		printf("%s\n", "----- TMP non existant / 1ere LIGNE -----");
-		while ((size = read(fd, buf, BUFF_SIZE) > 0))
-		{
-			while (buf[i] != '\n' && buf[i] != '\0')
-			{
-				len += size;
-				if (!(line[0] = ft_realloc(buf, len + 1)))
-					return (-1);
-				printf("strncat : %s\n", ft_strncat(line[0], buf, size));
-				//printf("1 line[%d][%d] = %c\n", 0, letter, line[0][letter]);
-				i++;
-				letter++;
-			}
-			line[0][letter] = '\0';
-			i++;
-			if (!(tmp = ft_strsub(buf, i, ft_strlen(buf) - i)))
-				return (-1);
-			tmp[ft_strlen(buf) - i + 1] = '\0';
-			if (ft_strequ(tmp, "\n") || !tmp)
-				return (0);
-			//printf("line[0] : %s\n", line[0]);
-			//printf("tmp : %s\n", tmp);
-		}
-	}
-	else
-	{
-		printf("%s\n", "----- TMP existant / PAS 1ere LIGNE -----");
-		while (tmp[i] != '\n' && tmp[i])
-		{
-				len++;
-				if (!(line[0] = ft_realloc(tmp, len + 1)))
-					return (-1);
-				ft_strncat(line[0], tmp, len);
-				i++;
-				letter++;
-		}
-		line[0][letter] = '\0';
-		i++;
-		if (!(bufcpy = ft_strsub(tmp, i, ft_strlen(tmp) - i)))
-			return (-1);
-		ft_strcpy(tmp, bufcpy);
-		//printf("line[0] : %s\n", line[0]);
-		printf("tmp : %s\n", tmp);
-		if (tmp[0] == '\n' || tmp[0] == '\0' || tmp[0] == EOF)
-		{
-			printf("%s\n", ">>>>>> DERNIERE LIGNE <<<<<<");
-			last = 1;
-			printf("last = %d\n", last);
+		bufcpy = read_file(fd);
+		//printf("bufcpy : %s\n", bufcpy);
+		if (ft_strequ(bufcpy, "\0"))
 			return (0);
-		}
+		buffer = ft_strdup(bufcpy);
 	}
+	if (tmp)
+	{
+		//printf("tmp : %s\n", tmp);
+		if (!(ft_strncat(tmp, bufcpy, ft_strlen(bufcpy))))
+			return (-1);
+		//printf("tmp 2 : %s\n", tmp);
+		buffer = ft_strdup(tmp);
+	}
+	//printf("buffer : %s\n", buffer);
+	while (buffer[i] != '\n' && buffer[i])
+		i++;
+
+	//printf("len bufcpy : %lu\n", ft_strlen(bufcpy));
+	if (!(line[0] = ft_strsub(buffer, 0, i)) || !(tmp = ft_strsub(buffer, i + 1, ft_strlen(buffer))))
+		return (-1);
 	return (1);
 }
 
 
-int		main(int argc, char **argv)
+/*int		main(int argc, char **argv)
 {
 	int fd;
 	char **line;
@@ -130,18 +83,18 @@ int		main(int argc, char **argv)
 	line = (char **)malloc(sizeof(char *) * 1000);
 	fd = open(argv[1], O_RDONLY);
 	printf("appel 1 : %d\n", get_next_line(fd, line));
-	printf("line[0] : %s\n", line[0]);
+	printf("line[0] : %s\n--------------------\n", line[0]);
 	printf("appel 2 : %d\n", get_next_line(fd, line));
-	printf("line[0] : %s\n", line[0]);
+	printf("line[0] : %s\n--------------------\n", line[0]);
 	printf("appel 3 : %d\n", get_next_line(fd, line));
+	printf("line[0] : %s\n--------------------\n", line[0]);
+	printf("appel 4 : %d\n", get_next_line(fd, line));
 	printf("line[0] : %s\n", line[0]);
-	printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("line[2] : %s\n", line[0]);
 	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	/*printf("appel 4 : %d\n", get_next_line(fd, line));
 	printf("appel 4 : %d\n", get_next_line(fd, line));
-	printf("appel 4 : %d\n", get_next_line(fd, line));*/
+	printf("appel 4 : %d\n", get_next_line(fd, line));
+	printf("appel 4 : %d\n", get_next_line(fd, line));
 
 	close(fd);
 	return (0);
-}
+}*/
