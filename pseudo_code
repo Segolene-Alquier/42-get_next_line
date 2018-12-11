@@ -34,5 +34,11 @@ TESTS :
 - buf_size < taille fichier sans \n >> test3
 - buf_size < taille fichier avec \n >> test4
 
+---------------------------------
+LISTES CHAINEES
 
+- Appel de GNL
+- Je regarde s'il existe un maillon qui contient mon fd comme comtent_size (je parcours ma chaine)
+> si ca n'est pas le cas, je cree un nouveau maillon, je l'ajoute a la suite des autres, et j'enregistre comme contenu mon tmp
+> si le fd est contenu dans un maillon, alors je continue de lire le fd en question et je renvoie la ligne
 

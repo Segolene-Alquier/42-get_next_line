@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/11 16:52:02 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/07 13:34:34 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -30,7 +30,7 @@ char	*read_file(const int fd)
 	return (bufcpy);
 }
 
-char	*fill_buffer(char *tmp, char *bufcpy)
+char	*fill_buffer(char * tmp, char *bufcpy)
 {
 	char *buffer;
 
@@ -48,76 +48,55 @@ char	*fill_buffer(char *tmp, char *bufcpy)
 	return (buffer);
 }
 
-t_list		*find_fd_lst(t_list *tmp_lst, const int fd)
-{
-	int		index;
-	t_list	*lst;
-
-	index = 0;
-	lst = tmp_lst;
-	while (lst)
-	{
-		if (lst->content_size == fd)
-			return (lst);
-		lst = lst->next;
-	}
-	return (NULL);
-}
-
 int		get_next_line(const int fd, char **line)
 {
 	char		*buffer;
 	char		*bufcpy;
-	static t_list	*lst = NULL;
-	//static char	*tmp = NULL;
+	static char	*tmp = NULL;
 	int			i;
 
 	i = 0;
 	bufcpy = ft_strdup("\0");
 	if (BUFF_SIZE < 1 || fd < 0 || !line || (read(fd, bufcpy, 0) < 0))
 		return (-1);
-	if (find_fd_lst(lst, fd) == NULL)
-		lst = ft_lstnew(NULL, fd);
-	else
-		lst = find_fd_lst(lst, fd);
 	line[0] = ft_strdup("\0");
-	if ((!lst->content || (lst->content && !ft_strchr(lst->content, '\n'))))
+	if ((!tmp || (tmp && !ft_strchr(tmp, '\n'))))
 		bufcpy = read_file(fd);
-	if (ft_strequ(bufcpy, "\0") && ft_strequ(lst->content, "\0"))
+	if (ft_strequ(bufcpy, "\0") && ft_strequ(tmp, "\0"))
 		return (0);
-	buffer = fill_buffer(lst->content, bufcpy);
+	buffer = fill_buffer(tmp, bufcpy);
 	while (buffer[i] != '\n' && buffer[i])
 		i++;
 	if (!(line[0] = ft_strsub(buffer, 0, i)) 
-		|| !(lst->content = ft_strsub(buffer, i + 1, ft_strlen(buffer))))
+			|| !(tmp = ft_strsub(buffer, i + 1, ft_strlen(buffer))))
 		return (-1);
 	return (1);
 }
 
 /*int		main(int argc, char **argv)
-{
-	int fd;
-	char **line;
-	//int i = 0;
-	if (argc < 0)
-		return (0);
-	line = (char **)malloc(sizeof(char *) * 1000);
-	fd = open(argv[1], O_RDONLY);
-	printf("appel 1 : %d\n", get_next_line(fd, line));
-	printf("line[0] : %s\n--------------------\n", line[0]);
-	printf("appel 2 : %d\n", get_next_line(fd, line));
-	printf("line[0] : %s\n--------------------\n", line[0]);
-	printf("appel 3 : %d\n", get_next_line(fd, line));
-	printf("line[0] : %s\n--------------------\n", line[0]);
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("line[0] : %s\n", line[0]);
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
-	//printf("appel 4 : %d\n", get_next_line(fd, line));
+  {
+  int fd;
+  char **line;
+//int i = 0;
+if (argc < 0)
+return (0);
+line = (char **)malloc(sizeof(char *) * 1000);
+fd = open(argv[1], O_RDONLY);
+printf("appel 1 : %d\n", get_next_line(fd, line));
+printf("line[0] : %s\n--------------------\n", line[0]);
+printf("appel 2 : %d\n", get_next_line(fd, line));
+printf("line[0] : %s\n--------------------\n", line[0]);
+printf("appel 3 : %d\n", get_next_line(fd, line));
+printf("line[0] : %s\n--------------------\n", line[0]);
+//printf("appel 4 : %d\n", get_next_line(fd, line));
+//printf("line[0] : %s\n", line[0]);
+//printf("appel 4 : %d\n", get_next_line(fd, line));
+//printf("appel 4 : %d\n", get_next_line(fd, line));
+//printf("appel 4 : %d\n", get_next_line(fd, line));
+//printf("appel 4 : %d\n", get_next_line(fd, line));
 
-	close(fd);
-	return (0);
+close(fd);
+return (0);
 }*/
 
 // ############ 01_test_simple.spec #################################
@@ -341,43 +320,43 @@ printf("ine : %s\n", line);
 // ############ 08_test_few_lines_of_08  #################################
 
 /*int		main(void)
-  {
-  char	*line;
-  int	out;
-  int				p[2];
-  int	fd;
+{
+	char	*line;
+	int	out;
+	int				p[2];
+	int	fd;
 
-  out = dup(1);
-  pipe(p);
+	out = dup(1);
+	pipe(p);
 
-  fd = 1;
-  dup2(p[1], fd);
-  write(fd, "abcdefgh\n", 9);
-  write(fd, "ijklmnop\n", 9);
-  write(fd, "qrstuvwx\n", 9);
-  write(fd, "yzabcdef\n", 9);
-  write(fd, "ghijklmn\n", 9);
-  write(fd, "opqrstuv\n", 9);
-  write(fd, "wxyzabcd\n", 9);
-  close(p[1]);
-  dup2(out, fd);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  printf("ret : %d\n", get_next_line(p[0], &line));
-  printf("ine : %s\n", line);
-  }*/
+	fd = 1;
+	dup2(p[1], fd);
+	write(fd, "abcdefgh\n", 9);
+	write(fd, "ijklmnop\n", 9);
+	write(fd, "qrstuvwx\n", 9);
+	write(fd, "yzabcdef\n", 9);
+	write(fd, "ghijklmn\n", 9);
+	write(fd, "opqrstuv\n", 9);
+	write(fd, "wxyzabcd\n", 9);
+	close(p[1]);
+	dup2(out, fd);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+	printf("ret : %d\n", get_next_line(p[0], &line));
+	printf("ine : %s\n", line);
+}*/
 
 
 // ############ 08_test_few_lines_of_08  #################################
