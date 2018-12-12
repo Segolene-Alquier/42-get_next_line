@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/11 16:52:02 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/12 19:43:16 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 # include "../libft/libft.h"
@@ -48,20 +48,28 @@ char	*fill_buffer(char *tmp, char *bufcpy)
 	return (buffer);
 }
 
-t_list		*find_fd_lst(t_list *tmp_lst, const int fd)
+t_list		*find_create_lst(t_list **tmp_lst, const int fd)
 {
-	int		index;
 	t_list	*lst;
+	t_list	*new_lst;
 
-	index = 0;
-	lst = tmp_lst;
+	lst = *tmp_lst;
 	while (lst)
 	{
-		if (lst->content_size == fd)
-			return (lst);
+		if ((int)lst->content_size == fd)
+			break ;
 		lst = lst->next;
 	}
-	return (NULL);
+	if (lst == NULL)
+	{
+		new_lst = ft_lstnew("\0", fd);
+		ft_lstadd(tmp_lst, new_lst);
+		lst = new_lst;
+	}
+	else
+		lst = *tmp_lst;
+	//printf("lst->content function : %s\n", lst->content);
+	return (lst);
 }
 
 int		get_next_line(const int fd, char **line)
@@ -69,17 +77,16 @@ int		get_next_line(const int fd, char **line)
 	char		*buffer;
 	char		*bufcpy;
 	static t_list	*lst = NULL;
-	//static char	*tmp = NULL;
+	t_list	*debug;
 	int			i;
 
+	debug = lst;
 	i = 0;
 	bufcpy = ft_strdup("\0");
 	if (BUFF_SIZE < 1 || fd < 0 || !line || (read(fd, bufcpy, 0) < 0))
 		return (-1);
-	if (find_fd_lst(lst, fd) == NULL)
-		lst = ft_lstnew(NULL, fd);
-	else
-		lst = find_fd_lst(lst, fd);
+	lst = find_create_lst(&lst, fd);
+	printf("lst->content : %s\n", lst->content);
 	line[0] = ft_strdup("\0");
 	if ((!lst->content || (lst->content && !ft_strchr(lst->content, '\n'))))
 		bufcpy = read_file(fd);
@@ -91,21 +98,30 @@ int		get_next_line(const int fd, char **line)
 	if (!(line[0] = ft_strsub(buffer, 0, i)) 
 		|| !(lst->content = ft_strsub(buffer, i + 1, ft_strlen(buffer))))
 		return (-1);
+	/*while (debug)
+	{
+		printf("debug->content fin : %s\n", debug->content);
+		debug = debug->next;
+	}*/
+	
+	printf("lst->content fin : %s\n", lst->content);
 	return (1);
 }
 
 /*int		main(int argc, char **argv)
 {
 	int fd;
+	int fd2;
 	char **line;
 	//int i = 0;
 	if (argc < 0)
 		return (0);
 	line = (char **)malloc(sizeof(char *) * 1000);
 	fd = open(argv[1], O_RDONLY);
+	fd2 = open(argv[2], O_RDONLY);
 	printf("appel 1 : %d\n", get_next_line(fd, line));
 	printf("line[0] : %s\n--------------------\n", line[0]);
-	printf("appel 2 : %d\n", get_next_line(fd, line));
+	printf("appel 2 : %d\n", get_next_line(fd2, line));
 	printf("line[0] : %s\n--------------------\n", line[0]);
 	printf("appel 3 : %d\n", get_next_line(fd, line));
 	printf("line[0] : %s\n--------------------\n", line[0]);
