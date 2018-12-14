@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:44:20 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/14 18:24:02 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/14 19:37:49 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 # define BUFF_SIZE 1024
 # include <unistd.h>
 # include <stdlib.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <fcntl.h>
+//# include <sys/types.h>
+//# include <sys/stat.h>
+//# include <fcntl.h>
 
 int		get_next_line(const int fd, char **line);
 

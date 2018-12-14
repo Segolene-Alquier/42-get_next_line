@@ -6,14 +6,12 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/14 18:52:41 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/14 19:35:41 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
 #include "get_next_line.h"
-#include <stdio.h>
-#include <string.h>
 
 char	*read_file(const int fd, char *bufcpy)
 {
