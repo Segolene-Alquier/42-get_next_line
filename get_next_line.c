@@ -6,7 +6,7 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/13 14:00:28 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/14 18:52:41 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,38 @@
 #include <stdio.h>
 #include <string.h>
 
-char	*read_file(const int fd)
+char	*read_file(const int fd, char *bufcpy)
 {
 	char	buf[BUFF_SIZE + 1];
 	int		size;
-	char	*bufcpy;
+	char	*tmp;
 
-	bufcpy = ft_strnew(BUFF_SIZE);
 	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[size] = '\0';
+		tmp = bufcpy;
 		bufcpy = ft_strjoin(bufcpy, buf);
+		free(tmp);
 		if (ft_strchr(buf, '\n'))
 			break ;
 	}
 	return (bufcpy);
 }
 
+int		free_return(char *to_free, int ret_value)
+{
+	free(to_free);
+	return (ret_value);
+}
+
 char	*fill_buffer(char *tmp, char *bufcpy)
 {
 	char *buffer;
 
-	if (!tmp || (tmp && !ft_strchr(tmp, '\n')))
-	{
-		if (!(buffer = ft_strdup(bufcpy)))
-			return (NULL);
-	}
-	if (tmp)
-	{
-		if (!(ft_strncat(tmp, bufcpy, ft_strlen(bufcpy)))
-				|| !(buffer = ft_strdup(tmp)))
-			return (NULL);
-	}
+	if (!(buffer = ft_strjoin(tmp, bufcpy)))
+		return (NULL);
+	free(bufcpy);
+	free(tmp);
 	return (buffer);
 }
 
@@ -54,10 +54,8 @@ t_list	*find_create_lst(t_list **tmp_lst, const int fd)
 {
 	t_list	*lst;
 	t_list	*new_lst;
-	t_list	*head;
 
 	lst = *tmp_lst;
-	head = *tmp_lst;
 	while (lst)
 	{
 		if ((int)lst->content_size == fd)
@@ -84,19 +82,20 @@ int		get_next_line(const int fd, char **line)
 	i = 0;
 	lst = NULL;
 	bufcpy = ft_strdup("\0");
-	if (BUFF_SIZE < 1 || fd < 0 || !line || (read(fd, bufcpy, 0) < 0))
+	if (BUFF_SIZE < 1 || fd < 0 || (read(fd, bufcpy, 0) < 0))
 		return (-1);
 	lst = find_create_lst(&head, fd);
-	line[0] = ft_strdup("\0");
 	if ((!lst->content || (lst->content && !ft_strchr(lst->content, '\n'))))
-		bufcpy = read_file(fd);
-	if (ft_strequ(bufcpy, "\0") && ft_strequ(lst->content, "\0"))
-		return (0);
-	buffer = fill_buffer(lst->content, bufcpy);
+		bufcpy = read_file(fd, bufcpy);
+	if (ft_strequ(bufcpy, "") && ft_strequ(lst->content, ""))
+		return (free_return(bufcpy, 0));
+	if (!(buffer = fill_buffer(lst->content, bufcpy)))
+		return (-1);
 	while (buffer[i] != '\n' && buffer[i])
 		i++;
-	if (!(line[0] = ft_strsub(buffer, 0, i))
-		|| !(lst->content = ft_strsub(buffer, i + 1, ft_strlen(buffer))))
+	if (!(*line = ft_strsub(buffer, 0, i))
+		|| !(lst->content = ft_strsub(buffer, i + 1, ft_strlen(buffer) - i)))
 		return (-1);
+	free(buffer);
 	return (1);
 }
