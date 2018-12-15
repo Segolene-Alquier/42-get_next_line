@@ -6,11 +6,10 @@
 /*   By: salquier <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/25 16:40:50 by salquier          #+#    #+#             */
-/*   Updated: 2018/12/14 19:35:41 by salquier         ###   ########.fr       */
+/*   Updated: 2018/12/15 18:00:15 by salquier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
 #include "get_next_line.h"
 
 char	*read_file(const int fd, char *bufcpy)
@@ -22,9 +21,9 @@ char	*read_file(const int fd, char *bufcpy)
 	while ((size = read(fd, buf, BUFF_SIZE)) > 0)
 	{
 		buf[size] = '\0';
-		tmp = bufcpy;
-		bufcpy = ft_strjoin(bufcpy, buf);
-		free(tmp);
+		tmp = ft_strjoin(bufcpy, buf);
+		free(bufcpy);
+		bufcpy = tmp;
 		if (ft_strchr(buf, '\n'))
 			break ;
 	}
@@ -85,7 +84,7 @@ int		get_next_line(const int fd, char **line)
 	lst = find_create_lst(&head, fd);
 	if ((!lst->content || (lst->content && !ft_strchr(lst->content, '\n'))))
 		bufcpy = read_file(fd, bufcpy);
-	if (ft_strequ(bufcpy, "") && ft_strequ(lst->content, ""))
+	if ((bufcpy[0] == '\0') && (((char *)lst->content)[0] == '\0'))
 		return (free_return(bufcpy, 0));
 	if (!(buffer = fill_buffer(lst->content, bufcpy)))
 		return (-1);
